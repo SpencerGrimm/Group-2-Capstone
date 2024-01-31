@@ -19,24 +19,43 @@ def open_image():
         # Replace "Ye" with "1/2" in the extracted text
         text = text.replace("Ye", "1/2")
 
-        # Print the extracted text
-        print("Extracted Text:")
-        print(text)
-
         # Save the extracted text to a .txt file
         output_file_path = 'Recipe.txt'
         with open(output_file_path, 'w') as file:
             file.write(text)
 
-        # Resize the image to a smaller size for display (optional)
-        resized_image = cv2.resize(image, (400, 300))
+        # Display the original image and extracted text in a simple GUI
+        display_result(image, text, output_file_path)
 
-        # Display the original image
-        cv2.imshow('Original Image', resized_image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+def display_result(image, text, output_file_path):
+    # Create a new window
+    result_window = tk.Toplevel()
+    result_window.title("Image Text Extractor Result")
 
-        print(f"Extracted text saved to {output_file_path}")
+    # Display the original image
+    photo = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    photo = Image.fromarray(photo)
+    photo = ImageTk.PhotoImage(photo)
+    image_label = tk.Label(result_window, image=photo)
+    image_label.image = photo
+    image_label.pack()
+
+    # Display the extracted text
+    text_label = tk.Label(result_window, text="Extracted Text:")
+    text_label.pack()
+
+    result_text = tk.Text(result_window, height=5, width=50)
+    result_text.insert(tk.END, text)
+    result_text.pack()
+
+    # Save the extracted text to a .txt file
+    save_button = tk.Button(result_window, text="Save to File", command=lambda: save_to_file(output_file_path, text))
+    save_button.pack()
+
+def save_to_file(output_file_path, text):
+    with open(output_file_path, 'w') as file:
+        file.write(text)
+    print(f"Extracted text saved to {output_file_path}")
 
 # Create the main window
 root = tk.Tk()
