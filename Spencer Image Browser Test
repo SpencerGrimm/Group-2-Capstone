@@ -1,0 +1,50 @@
+import cv2
+import pytesseract
+import tkinter as tk
+from tkinter import filedialog
+
+# Set the path to the Tesseract executable (replace this with your actual path)
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+def open_image():
+    file_path = filedialog.askopenfilename(title="Select an Image", filetypes=[("Image files", "*.png;*.jpg;*.jpeg;*.gif")])
+    
+    if file_path:
+        # Read the selected image
+        image = cv2.imread(file_path)
+
+        # Use Tesseract to extract text
+        text = pytesseract.image_to_string(image)
+
+        # Replace "Ye" with "1/2" in the extracted text
+        text = text.replace("Ye", "1/2")
+
+        # Print the extracted text
+        print("Extracted Text:")
+        print(text)
+
+        # Save the extracted text to a .txt file
+        output_file_path = 'Recipe.txt'
+        with open(output_file_path, 'w') as file:
+            file.write(text)
+
+        # Resize the image to a smaller size for display (optional)
+        resized_image = cv2.resize(image, (400, 300))
+
+        # Display the original image
+        cv2.imshow('Original Image', resized_image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+        print(f"Extracted text saved to {output_file_path}")
+
+# Create the main window
+root = tk.Tk()
+root.title("Image Text Extractor")
+
+# Create a button to open the file browser
+button = tk.Button(root, text="Open Image", command=open_image)
+button.pack()
+
+# Run the Tkinter event loop
+root.mainloop()
