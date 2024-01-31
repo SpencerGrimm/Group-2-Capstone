@@ -1,0 +1,37 @@
+#Proj-309-ITF
+#Group 2 
+#Spencer Grimm, Michael Brewin, Stanly Sinclair, Jakub Olszewik, Kieth Cruz, Taranpreet Kaur
+#Image to text converter
+import cv2
+import pytesseract
+
+# Set the path to the Tesseract executable (replace this with your actual path)
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+# Read an image
+image = cv2.imread(r'C:\-Visual studios\opencv\Test.jpg')
+
+# Use Tesseract to extract text
+text = pytesseract.image_to_string(image)
+
+# Replace "Ye" with "1/2" in the extracted text
+text = text.replace("Ye", "1/2")
+
+# Print the extracted text
+print("Extracted Text:")
+print(text)
+
+# Save the extracted text to a .txt file
+output_file_path = 'Recipe.txt'
+with open(output_file_path, 'w') as file:
+    file.write(text)
+
+# Resize the image to a smaller size for display (optional)
+resized_image = cv2.resize(image, (400, 300))
+
+# Display the original image
+cv2.imshow('Original Image', resized_image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+print(f"Extracted text saved to {output_file_path}")
