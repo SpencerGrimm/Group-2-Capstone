@@ -1,37 +1,74 @@
-#Proj-309-ITF
-#Group 2 
-#Spencer Grimm, Michael Brewin, Stanly Sinclair, Jakub Olszewik, Kieth Cruz, Taranpreet Kaur
-#Image to text converter
+#Proj Group 2 SnapnBake
+
+
 import cv2
 import pytesseract
+import tkinter as tk
+from tkinter import filedialog
 
 # Set the path to the Tesseract executable (replace this with your actual path)
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-# Read an image
-image = cv2.imread(r'C:\-Visual studios\opencv\Test.jpg')
+def process_image():
+    file_path = filedialog.askopenfilename(title="Select an Image", filetypes=[("Image files", "*.png;*.jpg;*.jpeg;*.gif")])
+    
+    if file_path:
+        # Read the selected image
+        image = cv2.imread(file_path)
 
-# Use Tesseract to extract text
-text = pytesseract.image_to_string(image)
+        # Use Tesseract to extract text
+        text = pytesseract.image_to_string(image)
 
-# Replace "Ye" with "1/2" in the extracted text
-text = text.replace("Ye", "1/2")
+        # Replace "Ye" with "1/2" in the extracted text
+        text = text.replace("Ye", "1/2")
 
-# Print the extracted text
-print("Extracted Text:")
-print(text)
+        # Update the Text widget to display the extracted text
+        text_display.delete(1.0, tk.END)  # Clear existing text
+        text_display.insert(tk.END, text)
 
-# Save the extracted text to a .txt file
-output_file_path = 'Recipe.txt'
-with open(output_file_path, 'w') as file:
-    file.write(text)
+        # Save the extracted text to a .txt file
+        output_file_path = 'Recipe.txt'
+        with open(output_file_path, 'w') as file:
+            file.write(text)
 
-# Resize the image to a smaller size for display (optional)
-resized_image = cv2.resize(image, (400, 300))
+        # Resize the image to a smaller size for display (optional)
+        resized_image = cv2.resize(image, (400, 300))
 
-# Display the original image
-cv2.imshow('Original Image', resized_image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+        # Display the original image
+        cv2.imshow('Original Image', resized_image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
-print(f"Extracted text saved to {output_file_path}")
+        print(f"Extracted text saved to {output_file_path}")
+
+# Create the main window
+root = tk.Tk()
+root.title("Image Text Extractor")
+
+# Configure the background color and window size
+root.configure(bg='pink')
+root.geometry("600x500")  # Adjust the window size as needed
+
+# Create buttons and text display
+buttons_frame = tk.Frame(root, bg='pink')  # Frame to hold buttons
+buttons_frame.pack(pady=20)  # Add padding to the frame
+
+# Button for processor
+processor_button = tk.Button(buttons_frame, text="Processor", command=process_image)
+processor_button.pack(pady=10)  # Add padding between buttons
+
+# Blank buttons with no function
+for i in range(1, 5):
+    blank_button = tk.Button(buttons_frame, text=f"Button {i}")
+    blank_button.pack(pady=10)  # Add padding between buttons
+
+# Exit button
+exit_button = tk.Button(buttons_frame, text="Exit", command=root.destroy)
+exit_button.pack(pady=10)  # Add padding between buttons
+
+# Text widget to display extracted text
+text_display = tk.Text(root, height=10, width=50, wrap=tk.WORD)
+text_display.pack(pady=20)  # Add padding below the Text widget
+
+# Run the Tkinter event loop
+root.mainloop()
