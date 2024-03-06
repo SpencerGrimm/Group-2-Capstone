@@ -4,14 +4,90 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
 from tkinter import messagebox
-from tkinter import simpledialog  # Import simpledialog for getting scale input
+from tkinter import simpledialog
+from PIL import Image, ImageTk  # Import Image and ImageTk from PIL
 import re
+import os
+from datetime import datetime
 
 # Set the path to the Tesseract executable (replace this with your actual path)
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # Set up a set to keep track of processed gluten-containing ingredients
 processed_gluten_ingredients = set()
+
+# Folder to store the recipes persistently
+recipe_folder_path = 'Saved_Recipes'
+
+def create_recipe_folder():
+    # Create the recipe folder if it doesn't exist
+    if not os.path.exists(recipe_folder_path):
+        os.makedirs(recipe_folder_path)
+
+def load_saved_recipes():
+    global last_five_recipes
+    try:
+        with open(recipe_folder_path + '/Last_Five_Recipes.txt', 'r') as file:
+            last_five_recipes = [line.strip() for line in file.readlines()]
+    except FileNotFoundError:
+        pass  # File doesn't exist yet
+
+def save_last_five_recipes():
+    # Save the last five recipes to a file
+    with open(recipe_folder_path + '/Last_Five_Recipes.txt', 'w') as file:
+        for idx, recipe in enumerate(last_five_recipes, start=1):
+            file.write(f"Recipe {idx}:\n{recipe}\n\n")
+    print(f"Last five recipes saved to {recipe_folder_path}/Last_Five_Recipes.txt")
+
+def set_background(root, image_path):
+    try:
+        # Open the image using Pillow
+        image = Image.open(image_path)
+
+        # Convert the image to the PhotoImage format
+        background_image = ImageTk.PhotoImage(image)
+
+        # Get the image dimensions
+        image_width = background_image.width()
+        image_height = background_image.height()
+
+        # Create a Canvas widget to place the background image
+        canvas = tk.Canvas(root, width=image_width, height=image_height, highlightthickness=0)  # Set highlightthickness to 0 to make the Canvas transparent
+        canvas.pack()
+
+        # Place the background image on the Canvas
+        canvas.create_image(0, 0, anchor=tk.NW, image=background_image)
+
+        # This line will keep a reference to the image, preventing it from being garbage collected
+        canvas.image = background_image
+
+        # Return the canvas to add widgets on top of it
+        return canvas
+    except Exception as e:
+        print(f"Error setting background image: {e}")
+        return None
+
+def scale_numbers(text, scale_factor):
+    # Split the text into lines
+    lines = text.split('\n')
+    scaled_lines = []
+
+    for line in lines:
+        scaled_line = ""
+        words = line.split()
+        for word in words:
+            try:
+                number = float(word)
+                scaled_number = number * scale_factor
+                scaled_line += f"{scaled_number} "
+            except ValueError:
+                scaled_line += f"{word} "
+
+        scaled_lines.append(scaled_line.strip())
+
+    # Join the lines back into a single string
+    scaled_text = '\n'.join(scaled_lines)
+    return scaled_text
 
 def select_recipe_image():
     file_path = filedialog.askopenfilename(title="Select a Recipe Image", filetypes=[("Image files", "*.png;*.jpg;*.jpeg;*.gif")])
@@ -75,7 +151,31 @@ def suggest_gluten_alternatives():
     text_display_scaled.insert(tk.END, gluten_message)
 
 def exit_application():
+    save_last_five_recipes()
     root.destroy()
+
+def print_saved_recipes():
+    # Get a list of saved recipe files
+    recipe_files = [f for f in os.listdir(recipe_folder_path) if f.endswith('.txt')]
+
+    if not recipe_files:
+        print("No saved recipes found.")
+        return
+
+    # Ask the user which recipe to print
+    chosen_recipe = simpledialog.askstring("Print Recipe", "Enter the recipe number to print (e.g., 1):")
+
+    if not chosen_recipe:
+        return  # User canceled or entered an empty string
+
+    chosen_recipe_file = f'Recipe_{chosen_recipe}.txt'
+
+    if chosen_recipe_file not in recipe_files:
+        print(f"Recipe {chosen_recipe} not found.")
+        return
+
+    with open(os.path.join(recipe_folder_path, chosen_recipe_file), 'r') as file:
+        print(file.read())
 
 def start_processing(original_text, image, scale_factor, window_to_destroy):
     window_to_destroy.destroy()
@@ -90,9 +190,14 @@ def start_processing(original_text, image, scale_factor, window_to_destroy):
     text_display_scaled.insert(tk.END, f"Scaled Text (Factor {scale_factor}):\n{scaled_text}\n\n")
 
     # Save the scaled text to a .txt file
-    output_file_path = 'Scaled_Recipe.txt'
+    output_file_path = f'{recipe_folder_path}/Scaled_Recipe_{datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
     with open(output_file_path, 'w') as file:
         file.write(scaled_text)
+
+    # Save the scaled text to the last_five_recipes list
+    if len(last_five_recipes) == 5:
+        last_five_recipes.pop(0)
+    last_five_recipes.append(scaled_text)
 
     # Resize the image to a smaller size for display (optional)
     resized_image = cv2.resize(image, (800, 600))
@@ -107,46 +212,22 @@ def start_processing(original_text, image, scale_factor, window_to_destroy):
     # Show a message indicating image processing is done
     messagebox.showinfo("Image Processing Complete", "Image processing is complete. Check the output.")
 
-def scale_numbers(text, scale_factor):
-    # Split the text into lines
-    lines = text.split('\n')
-    scaled_lines = []
-
-    for line in lines:
-        scaled_line = ""
-        words = line.split()
-        for word in words:
-            try:
-                number = float(word)
-                scaled_number = number * scale_factor
-                scaled_line += f"{scaled_number} "
-            except ValueError:
-                scaled_line += f"{word} "
-
-        scaled_lines.append(scaled_line.strip())
-
-    # Join the lines back into a single string
-    scaled_text = '\n'.join(scaled_lines)
-    return scaled_text
-
 # Create the main window
 root = tk.Tk()
 root.title("Image Text Extractor and Scaler")
 
-# Configure themed style for rounded corners
-style = ttk.Style()
-style.configure("TFrame", background='pink', borderwidth=5, relief=tk.SOLID, padding=(10, 10))
+# Create recipe folder if it doesn't exist
+create_recipe_folder()
 
-# Apply style to the main window
-root.geometry("800x600")
-root.configure(bg='pink')
+# Set background image
+background_canvas = set_background(root, r'C:\App\background.jpg')
 
 # Title bar
-title_label = tk.Label(root, text="Image Text Extractor and Scaler", font=('Helvetica', 16, 'bold'), bg='pink')
+title_label = tk.Label(background_canvas, text="Image Text Extractor and Scaler", font=('Helvetica', 16, 'bold'), bg='pink')
 title_label.pack(pady=10)
 
 # Create a themed frame for buttons and text display
-main_frame = ttk.Frame(root, style="TFrame")
+main_frame = ttk.Frame(background_canvas, style="TFrame")
 main_frame.pack(pady=20, padx=20, fill=tk.BOTH, expand=True)
 
 # Button for selecting recipe image
@@ -156,6 +237,10 @@ select_recipe_button.pack(pady=10)
 # Button for suggesting gluten alternatives
 gluten_suggestion_button = tk.Button(main_frame, text="Gluten Supplement Suggestion", command=suggest_gluten_alternatives)
 gluten_suggestion_button.pack(pady=10)
+
+# Button for printing saved recipes
+print_recipes_button = tk.Button(main_frame, text="Print Saved Recipes", command=print_saved_recipes)
+print_recipes_button.pack(pady=10)
 
 # Button for exiting the application
 exit_button = tk.Button(main_frame, text="Exit", command=exit_application)
@@ -167,6 +252,9 @@ text_display_original.pack(side=tk.LEFT, padx=10, pady=20)
 
 text_display_scaled = tk.Text(main_frame, height=20, width=50, wrap=tk.WORD, font=('Helvetica', 12))
 text_display_scaled.pack(side=tk.LEFT, padx=10, pady=20)
+
+# Load saved recipes on startup
+load_saved_recipes()
 
 # Run the Tkinter event loop
 root.mainloop()
