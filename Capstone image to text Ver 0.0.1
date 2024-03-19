@@ -5,7 +5,7 @@ from tkinter import filedialog
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import simpledialog
-from PIL import Image, ImageTk  # Import Image and ImageTk from PIL
+from PIL import Image, ImageTk
 import re
 import os
 from datetime import datetime
@@ -89,6 +89,43 @@ def scale_numbers(text, scale_factor):
     scaled_text = '\n'.join(scaled_lines)
     return scaled_text
 
+def start_processing(original_text, image, scale_factor, window_to_destroy):
+    if window_to_destroy:
+        window_to_destroy.destroy()
+
+    # Update the Text widgets to display the extracted and scaled text side by side
+    text_display_original.delete(1.0, tk.END)  # Clear existing text
+    text_display_original.insert(tk.END, f"Original Text:\n{original_text}\n\n")
+
+    scaled_text = scale_numbers(original_text, scale_factor)
+
+    text_display_scaled.delete(1.0, tk.END)  # Clear existing text
+    text_display_scaled.insert(tk.END, f"Scaled Text (Factor {scale_factor}):\n{scaled_text}\n\n")
+
+    # Save the scaled text to a .txt file
+    output_file_path = f'{recipe_folder_path}/Scaled_Recipe_{datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
+    with open(output_file_path, 'w') as file:
+        file.write(scaled_text)
+
+    # Save the scaled text to the last_five_recipes list
+    if len(last_five_recipes) == 5:
+        last_five_recipes.pop(0)
+    last_five_recipes.append(scaled_text)
+
+    # Resize the image to a smaller size for display (optional)
+    if image:
+        resized_image = cv2.resize(image, (800, 600))
+
+        # Display the original image
+        cv2.imshow('Original Image', resized_image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+    print(f"Scaled text saved to {output_file_path}")
+
+    # Show a message indicating image processing is done
+    messagebox.showinfo("Image Processing Complete", "Image processing is complete. Check the output.")
+
 def select_recipe_image():
     file_path = filedialog.askopenfilename(title="Select a Recipe Image", filetypes=[("Image files", "*.png;*.jpg;*.jpeg;*.gif")])
 
@@ -150,67 +187,92 @@ def suggest_gluten_alternatives():
     # Display the gluten suggestion in the Text widget
     text_display_scaled.insert(tk.END, gluten_message)
 
+def suggest_lactose_alternatives():
+    # Get the current content of the Text widget
+    scaled_text = text_display_scaled.get(1.0, tk.END)
+
+    # Use a regular expression to find ingredients that may contain lactose
+    lactose_pattern = re.compile(r'\b(milk|butter|cream|cheese|yogurt|ice cream)\b', re.IGNORECASE)
+    matches = lactose_pattern.findall(scaled_text)
+
+    if matches:
+        # Display lactose-containing ingredients and suggest alternatives
+        lactose_message = "Ingredients that may contain lactose:\n"
+        for ingredient in matches:
+            # Add suggestions for lactose-free alternatives here
+            lactose_message += f"{ingredient}\n"
+            lactose_message += f"Suggested lactose-free alternative for {ingredient}: Consider using dairy-free alternatives like almond milk, coconut milk, or soy-based products.\n"
+    else:
+        lactose_message = "No lactose-containing ingredients found in the scaled text."
+
+    # Display the lactose suggestion in the Text widget
+    text_display_scaled.insert(tk.END, lactose_message)
+
+def suggest_allergen_supplements():
+    suggest_gluten_alternatives()
+    suggest_lactose_alternatives()
+
 def exit_application():
     save_last_five_recipes()
     root.destroy()
 
-def print_saved_recipes():
-    # Get a list of saved recipe files
-    recipe_files = [f for f in os.listdir(recipe_folder_path) if f.endswith('.txt')]
+def save_current_output():
+    # Get the current content of the scaled text display
+    current_output = text_display_scaled.get(1.0, tk.END)
 
-    if not recipe_files:
-        print("No saved recipes found.")
-        return
-
-    # Ask the user which recipe to print
-    chosen_recipe = simpledialog.askstring("Print Recipe", "Enter the recipe number to print (e.g., 1):")
-
-    if not chosen_recipe:
-        return  # User canceled or entered an empty string
-
-    chosen_recipe_file = f'Recipe_{chosen_recipe}.txt'
-
-    if chosen_recipe_file not in recipe_files:
-        print(f"Recipe {chosen_recipe} not found.")
-        return
-
-    with open(os.path.join(recipe_folder_path, chosen_recipe_file), 'r') as file:
-        print(file.read())
-
-def start_processing(original_text, image, scale_factor, window_to_destroy):
-    window_to_destroy.destroy()
-
-    # Update the Text widgets to display the extracted and scaled text side by side
-    text_display_original.delete(1.0, tk.END)  # Clear existing text
-    text_display_original.insert(tk.END, f"Original Text:\n{original_text}\n\n")
-
-    scaled_text = scale_numbers(original_text, scale_factor)
-
-    text_display_scaled.delete(1.0, tk.END)  # Clear existing text
-    text_display_scaled.insert(tk.END, f"Scaled Text (Factor {scale_factor}):\n{scaled_text}\n\n")
-
-    # Save the scaled text to a .txt file
-    output_file_path = f'{recipe_folder_path}/Scaled_Recipe_{datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
+    # Save the current output to a file
+    output_file_path = f'{recipe_folder_path}/Current_Output_{datetime.now().strftime("%Y%m%d%H%M%S")}.txt'
     with open(output_file_path, 'w') as file:
-        file.write(scaled_text)
+        file.write(current_output)
 
-    # Save the scaled text to the last_five_recipes list
-    if len(last_five_recipes) == 5:
-        last_five_recipes.pop(0)
-    last_five_recipes.append(scaled_text)
+    print(f"Current output saved to {output_file_path}")
 
-    # Resize the image to a smaller size for display (optional)
-    resized_image = cv2.resize(image, (800, 600))
+    return output_file_path
 
-    # Display the original image
-    cv2.imshow('Original Image', resized_image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+def print_saved_output():
+    file_path = filedialog.askopenfilename(title="Select File to Print", initialdir=recipe_folder_path, filetypes=[("Text files", "*.txt")])
+    
+    if file_path:
+        # Print the selected file
+        os.startfile(file_path, "print")
 
-    print(f"Scaled text saved to {output_file_path}")
+def select_previous_recipe():
+    file_path = filedialog.askopenfilename(title="Select a Previous Recipe", initialdir=recipe_folder_path, filetypes=[("Text files", "*.txt")])
+    
+    if file_path:
+        # Ask if the user wants to apply a scale
+        apply_scale = messagebox.askyesno("Apply Scale", "Do you want to apply a scale to the selected recipe?")
+        
+        if apply_scale:
+            with open(file_path, 'r') as file:
+                original_text = file.read()
 
-    # Show a message indicating image processing is done
-    messagebox.showinfo("Image Processing Complete", "Image processing is complete. Check the output.")
+            # Use Tesseract to extract text
+            image = None  # No image for previous recipes
+            scale_factor = simpledialog.askfloat("Scale Input", "Enter Scale Factor:")
+            start_processing(original_text, image, scale_factor, None)
+        else:
+            with open(file_path, 'r') as file:
+                raw_text = file.read()
+
+            # Display the raw text in the output box
+            text_display_scaled.delete(1.0, tk.END)  # Clear existing text
+            text_display_scaled.insert(tk.END, raw_text)
+
+            # Clear the original text box
+            text_display_original.delete(1.0, tk.END)  # Clear existing text
+
+def open_and_modify_file():
+    file_path = filedialog.askopenfilename(title="Open Recipe Text File", initialdir=recipe_folder_path, filetypes=[("Text files", "*.txt")])
+    if file_path:
+        with open(file_path, 'r') as file:
+            text_content = file.read()
+
+        modified_text = simpledialog.askstring("Modify Recipe", "Modify the recipe text:", initialvalue=text_content)
+        if modified_text is not None:
+            with open(file_path, 'w') as file:
+                file.write(modified_text)
+            messagebox.showinfo("File Saved", "Modified recipe saved successfully.")
 
 # Create the main window
 root = tk.Tk()
@@ -239,13 +301,21 @@ style.configure("Colored.TFrame", background='#F08BB6')
 select_recipe_button = tk.Button(main_frame, text="Process Recipe", command=select_recipe_image)
 select_recipe_button.pack(pady=10)
 
-# Button for suggesting gluten alternatives
-gluten_suggestion_button = tk.Button(main_frame, text="Allergen Supplement Suggestion", command=suggest_gluten_alternatives)
-gluten_suggestion_button.pack(pady=10)
+# Button for suggesting allergen supplements (both gluten and lactose)
+allergen_suggestion_button = tk.Button(main_frame, text="Allergen Supplement Suggestion", command=suggest_allergen_supplements)
+allergen_suggestion_button.pack(pady=10)
 
-# Button for printing saved recipes
-print_recipes_button = tk.Button(main_frame, text="Print Saved Recipes", command=print_saved_recipes)
-print_recipes_button.pack(pady=10)
+# Button for selecting previous recipe
+select_previous_recipe_button = tk.Button(main_frame, text="Select Previous Recipe", command=select_previous_recipe)
+select_previous_recipe_button.pack(pady=10)
+
+# Button for opening and modifying a file
+open_modify_button = tk.Button(main_frame, text="Open & Modify Recipe", command=open_and_modify_file)
+open_modify_button.pack(pady=10)
+
+# Button for printing saved output
+print_saved_output_button = tk.Button(main_frame, text="Print Selected Output", command=print_saved_output)
+print_saved_output_button.pack(pady=10)
 
 # Button for exiting the application
 exit_button = tk.Button(main_frame, text="Exit", command=exit_application)
