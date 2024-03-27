@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
-    
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <head>
 
 <title>Snap N' Bake</title>
@@ -9,13 +11,37 @@
 
 <style>
 
+    .accordion {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  transition: 0.4s;
+}
+
+.active, .accordion:hover {
+  background-color: rgb(161, 22, 22); 
+}
+
+.panel {
+  padding: 0 18px;
+  display: none;
+  background-color: white;
+  overflow: hidden;
+}
+
     body {background-image: url('./cook.jpg');
         background-repeat: no-repeat;
         background-attachment: fixed;
         background-size: 100% 100%;
 }
     .logo {
-    width: 100px;
+    width: 50px;
     height: auto;
     border-radius: 10px;
     
@@ -27,9 +53,9 @@
 }
 
     .content-container {
-    background-color: rgba(150, 98, 173, 0.8);
-    padding: 20px;
-    margin: 20px;
+    background-color: rgba(156, 193, 95, 0.8);
+    padding: 70px;
+    margin: 10px;
 }
   
 
@@ -48,40 +74,74 @@
 
 </head>
 
-
 <body>
     <header>
     <div class="content-container">
         <!-- Your additional content goes here -->
-        
+    
 
         <img class="logo" src="shakenbake.png" alt="Logo">
-        <h1 align="center">Snap N' Bake </h1>
-        <p align="center"><b> Welcome to the official Snap N' Bake website!</b></p>
+        
 
-    <h1 align="center"> What is SnapNBake? </h1>
-        <!--Dropdown Menu-->
-    <P align="center" style="color: rgba(23, 14, 100, 0.578)"> 
-    Snap N' Bake is a revolutionary software that helps you learn how to cook! </P>
-    <p align="center" style="color: rgb(77, 77, 175)">
-    By simply taking a picture on your phone or uploading it directly from your computer </p>
-    <p align="center"style="color: rgb(125, 39, 135)">
-    The app is going to diplay the recipe and let you save it or print it. </p> 
-        <!--End of Dropdown Menu-->
+        <div class="names">
+            <span>Spencer</span>
+            <span>Stanly</span>
+            <span>Michael</span>
+            <span>Jakub</span>
+            <span>Taranpreet</span>
+            <span>Kieth </span>
+        </div>
+<h1 align="center">Snap N' Bake </h1>
+<p align="center"><b> Welcome to the official Snap N' Bake website!</b></p>
+        
+<h1 align="center"> What is SnapNBake? </h1>
+ <!--Dropdown menu-->
+ 
+<P align="center" button class="accordion">About the app!</button>
+<div class="panel">
+<P align="center" style="color: rgba(23, 14, 100, 0.578)"> 
+Snap N' Bake is a revolutionary software that helps you learn how to cook! 
+</P>
+</div>
+
+<P align="center" button class="accordion">How Snap N' Bake works!</button>
+<div class="panel">
+<p align="center" style="color: rgb(77, 77, 175)">
+By simply taking a picture on your phone or uploading it directly from your computer 
+</p>
+</div>
+
+<P align="center" button class="accordion">What does the Snap N' Bake do?</button>
+<div class="panel">
+
+<p align="center"style="color: rgb(125, 39, 135)">
+The app is going to diplay the recipe and let you save it or print it. </p>
+</div>   
+
+<!--Script that makes menu go down-->
+<script>
+var acc = document.getElementsByClassName("accordion");
+var i;
+    
+    for (i = 0; i < acc.length; i++) {
+      acc[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        if (panel.style.display === "block") {
+          panel.style.display = "none";
+        } else {
+          panel.style.display = "block";
+        }
+      });
+    }
+</script>
+    
+<!--End of the script that makes menu go down-->
+
     <a align="center" href="https://www.SnapNBake.com/hehe">I hate to cook!</a><br>
     <br>
     <a align="center" href="https://www.SnapNBake.com/app">I love to cook! <-- Click to proceed to the Snap N' Bake</a> 
-
-        
-    <div class="names">
-        <span>Spencer</span>
-        <span>Stanly</span>
-        <span>Michael</span>
-        <span>Jakub</span>
-        <span>Taranpreet</span>
-        <span>Kieth </span>
-    </div>
-        
+  
     </header>
    
 </div>
