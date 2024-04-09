@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Gallery</title>
+	
+	<link rel="stylesheet" href="style.css">
+	
+<style>
+
+    .panel {
+        padding: 0 18px;
+        display: none;
+        background-color: white;
+        overflow: hidden;
+    }
+
+    .body {
+        color: white;
+		padding: 70px;
+		margin: 10px;
+    }
+
+	.content-container {
+    background-color: rgba(229, 81, 236, 0.8);
+    padding: 70px;
+    margin: 10px;
+}
+
+	.parent-container {
+    display: flex;
+    justify-content: space-between; /* This will create space between the child elements */
+    flex-wrap: wrap; /* Allows the items to wrap into the next line if the container is too narrow */
+}
+
+	.parent {
+    flex: 1; /* This allows the boxes to grow and occupy the space */
+    margin: 10px; /* Adds a little space around each box for breathing room */
+    max-width: 45%; /* Ensures that boxes don't grow too large, adjust this value as needed */
+}
+
+
+
+
+        /* Style for each service section */
+        .service-section {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 30px;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center; /* Center the content */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .service-section h2 {
+            margin-bottom: 10px; /* Added margin below headings */
+        }
+
+        .service-section p {
+            margin-bottom: 10px; /* Added margin below paragraphs */
+        }
+
+		.service-section img {
+            width: 97%; /* Adjusted image width */
+            height: auto;
+            margin-top: 15px;
+        }
+		
+		
+
+
+</style>
+
+	
+</head>
+
+<body>
+    <header>
+        <img class="logo" src="\images\logo.png" alt="Logo">
+        <h1>Gallery</h1>
+        <div class="names">
+            <span>Snap N Bake</span>
+        </div>
+    </header>
+
+
+    <div class="nav-links">
+        <ul>
+            <li><a href="\index.html">Home</a></li>
+            <li><a href="\aboutus.html">About Us</a></li>
+            <li><a href="\service.html">Service</a></li>
+            <li><a href="\gallery.html">Gallery</a></li>
+            <li><a href="\reviews.html">Reviews</a></li>
+            <li><a href="\faq.html">FAQ</a></li>
+        </ul>
+    </div>
+
+	
+		<div class="body">
+<h1 align="center"> Gallery </h1>
+
+<p><b>Welcome to Snap N Bake!<b> </p>
+
+<p>Here is where we show our progress over the course of this semester! <br> 
+
+
+<div class="parent-container">
+
+        <div class="parent parent-1">
+            <div class="service-section alpha">
+                <h2>Alpha</h2>
+                <p>Here is our Alpha build</p>
+                <img src="images/alpha.png" alt="alpha">
+            </div>
+        </div>
+		
+		<div class="parent parent-2">
+            <div class="service-section beta">
+                <h2>Beta</h2>
+                <p>Here is our Beta build</p>
+                <img src="images/beta.png" alt="beta">
+            </div>
+        </div>
+
+</div>
+
+</body>
+
+</html>

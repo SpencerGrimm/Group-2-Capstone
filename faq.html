@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>FAQ</title>
+	
+	<link rel="stylesheet" href="style.css">
+	
+<style>
+    .accordion {
+        background-color: #eee;
+        color: #444;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+        transition: 0.4s;
+    }
+
+    .active, .accordion:hover {
+        background-color: rgb(200, 51, 177); 
+    }
+
+    .panel {
+        padding: 0 18px;
+        display: none;
+        background-color: white;
+        overflow: hidden;
+    }
+
+    .body {
+        color: white;
+		padding: 70px;
+		margin: 10px;
+    }
+
+	.content-container {
+    background-color: rgba(229, 81, 236, 0.8);
+    padding: 70px;
+    margin: 10px;
+}
+
+	
+
+</style>
+
+	
+</head>
+
+<body>
+    <header>
+        <img class="logo" src="\images\logo.png" alt="Logo">
+        <h1>FAQ</h1>
+        <div class="names">
+            <span>Snap N Bake</span>
+        </div>
+    </header>
+
+
+    <div class="nav-links">
+        <ul>
+            <li><a href="\index.html">Home</a></li>
+            <li><a href="\aboutus.html">About Us</a></li>
+            <li><a href="\service.html">Service</a></li>
+            <li><a href="\gallery.html">Gallery</a></li>
+            <li><a href="\reviews.html">Reviews</a></li>
+            <li><a href="\faq.html">FAQ</a></li>
+        </ul>
+    </div>
+
+	
+		<div class="body">
+<h1 align="center"> Frequently Asked Questions </h1>
+
+<p><b>Welcome to Snap N Bake!<b> </p>
+
+<p>Here, we've compiled answers to some of the most common questions our users have about our services, products, and policies.<br> 
+
+Our aim is to provide you with quick, clear information to help enhance your experience with us.<br>
+If you can't find what you're looking for or need further assistance, please don't hesitate to reach out to our team.<br> 
+We're here to ensure your experience with us is as smooth and enjoyable as possible. Let's dive into your questions!</p>
+<br>
+
+ <!--Dropdown menu-->
+ 
+<P align="center" button class="accordion">In what ways does Snap n Bake convert recipe amounts accurately?</button>
+<div class="panel">
+<P align="center" style="color: rgba(23, 14, 100, 0.578)"> 
+To precisely convert recipe quantities, Snap n Bake uses intricate algorithms that account for ingredient density, volume and weight. 
+</P>
+</div>
+
+
+<P align="center" button class="accordion">Can all kinds of components, including liquids, solids, and powders, be converted using Snap n Bake?</button>
+<div class="panel">
+<p align="center" style="color: rgb(77, 77, 175)">
+Indeed, a variety of materials, including liquids, solids, powders, and even unique goods, can have their proportions converted by Snap n Bake.
+</p>
+</div>
+
+
+<P align="center" button class="accordion">Can you use both metric and imperial measurements with Snap and Bake?</button>
+<div class="panel">
+<p align="center"style="color: rgb(125, 39, 135)">
+With support for metric measurements, Snap n Bake serves a global user base.</p>
+</div>  
+
+
+<P align="center" button class="accordion">Does Snap n Bake have any restrictions on the kinds of recipes it can convert?</button>
+<div class="panel">
+<p align="center"style="color: rgb(125, 39, 135)">
+Almost any recipe may be transformed using Snap n Bake, from easy home cooking to delicate gourmet meals. Its ability to handle different kinds of recipes is unlimited.</p>
+</div>  
+
+
+<P align="center" button class="accordion">How straightforward is it to input and convert recipe quantities using the interface?</button>
+<div class="panel">
+<p align="center"style="color: rgb(125, 39, 135)">
+With its simple and easy-to-use interface, Snap n Bake makes it simple to enter and modify recipe quantities. The site is simple for users to navigate and required little effort.</p>
+</div>  
+
+
+<P align="center" button class="accordion">Does Snap n Bake offer recommendations or advice on how to modify recipes in light of converted quantities?</button>
+<div class="panel">
+<p align="center"style="color: rgb(125, 39, 135)">
+Yes, Snap n Bake provides useful advice on how to modify recipes according to converted numbers, as well as suggestions on a range of dietary constraints.</p>
+</div>  
+
+
+<P align="center" button class="accordion">Is it possible for users to alter portions and serving sizes in Snap n Bake?</button>
+<div class="panel">
+<p align="center"style="color: rgb(125, 39, 135)">
+Of course! Snap n Bake makes it simple to scale recipes from side to side or downward based on user preferences by allowing users to alter portions and serving sizes.</p>
+</div>  
+
+
+<P align="center" button class="accordion">How is consistency and accuracy in conversions ensured by Snap n Bake?</button>
+<div class="panel">
+<p align="center"style="color: rgb(125, 39, 135)">
+To guarantee precision and consistency in its conversions, Snap n Bake goes through a rigorous testing and validation process. The algorithms are constantly improved to produce accurate outcomes.</p>
+</div>  
+
+
+<P align="center" button class="accordion">Does Snap n Bake have a mobile app that can be downloaded, and does it have any extra features?</button>
+<div class="panel">
+<p align="center"style="color: rgb(125, 39, 135)">
+No, there isn’t currently a mobile app for Snap n Bake. However, it also has features like suggested ingredient substitutions.</p>
+</div>  
+
+
+<P align="center" button class="accordion"> Is it possible to modify recipes for certain diets or dietary restrictions using Snap n Bake?</button>
+<div class="panel">
+<p align="center"style="color: rgb(125, 39, 135)">
+Yes, Snap n Bake offers alternatives for ingredient replacements and tweaks to satisfy individual dietary demands, making it suitable for a wide range of dietary preferences and constraints.</p>
+</div>  
+
+
+<!--Script that makes menu go down-->
+<script>
+var acc = document.getElementsByClassName("accordion");
+var i;
+    
+    for (i = 0; i < acc.length; i++) {
+      acc[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        if (panel.style.display === "block") {
+          panel.style.display = "none";
+        } else {
+          panel.style.display = "block";
+        }
+      });
+    }
+</script>
+    
+<!--End of the script that makes menu go down-->
+
+</body>
+
+</html>

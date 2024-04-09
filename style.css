@@ -1,0 +1,97 @@
+
+html {
+    height: 100%; 
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url("images/shakenbake.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    position: relative; 
+    min-height: 100%; 
+    overflow-x: hidden; 
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+
+        header {
+            position: relative;
+            z-index: 1;
+            background-color: #333333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-position: center;
+        }
+
+        .logo {
+            width: 100px;
+            height: auto;
+            margin-right: 20px;
+            margin-left: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        h1 {
+            margin: 0;
+            text-align: center;
+        }
+
+        .names {
+            display: flex;
+			font-family: 'Impact', sans-serif;
+			font-size: 25px;
+        }
+
+        .names span {
+            margin-left: 10px;
+        }
+
+
+        .nav-links {
+            background-color: #3498db;
+            padding: 20px;
+            margin: 20px;
+        }
+
+        .nav-links ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-links li {
+            margin: 0 10px;
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: italic;
+        }
+
+        .content-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 70px;
+        }
