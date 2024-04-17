@@ -1,4 +1,3 @@
-
 html {
     height: 100%; 
 }
@@ -15,7 +14,12 @@ body {
     position: relative; 
     min-height: 100%; 
     overflow-x: hidden; 
+    
+    
 }
+body {
+    background-color: hsl(302, 58%, 52%);
+  }
 
 body::before {
     content: "";
